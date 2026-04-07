@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "thredis"
 version = "0.1.0"
-description = "Async Redis Streams with concurrent processing and per-message acknowledgment"
+description = "Async Redis Streams with concurrent processing"
 readme = "README.md"
 license = "MIT"
 authors = ["Guy B"]
