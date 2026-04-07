@@ -1,14 +1,12 @@
 # thredis
 
-Async Redis Streams with concurrent processing and per-message ack.
+Concurrent message processing for Redis Streams.
 
 ## Why?
 
-Redis Streams support per-message `XACK`, meaning a single consumer can safely process multiple messages concurrently. 
-No Python library does this. 
-They all process one message at a time per consumer, forcing you to spawn hundreds of consumers for parallelism.
-The underlying Redis primitive supports concurrency. The libraries just don't use it.
-thredis does.
+Every Python library used for working with redis streams makes its consumers process messages one at a time.
+That means hundreds of idle consumers burning CPU and network just to poll.
+Redis Streams supports concurrent processing. No library takes advantage of it. thredis does.
 
 ## Install
 
@@ -34,8 +32,6 @@ async def handle_order(msg: StreamMessage[Order]):
 
 app.run()
 ```
-
-Messages are acked on success. If a handler raises, the message stays in the PEL and gets autoclaimed by another consumer.
 
 ## Features
 
