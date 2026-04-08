@@ -11,21 +11,12 @@ import uuid
 
 from models import Invoice, Notification, Order
 
-from thredis import Thredis, StreamMessage, CallNext, publish
+from thredis import Thredis, StreamMessage, publish
+from thredis.middlewares import trace
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s")
 
-app = Thredis(redis_url="redis://localhost:6379", health_port=5006)
-
-
-async def trace_middleware(msg: StreamMessage, call_next: CallNext) -> None:
-    cid = msg.headers.get("correlation_id", "unknown")
-    logging.info(f"[cid={cid}] Processing {type(msg.body).__name__}")
-    await call_next(msg)
-    logging.info(f"[cid={cid}] Done")
-
-
-app.add_middleware(trace_middleware)
+app = Thredis(redis_url="redis://localhost:6379", health_port=5006, middlewares=[trace()])
 
 
 @app.subscriber(stream="orders", group="order-service", concurrency=10)
